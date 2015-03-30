@@ -1,0 +1,71 @@
+#!/bin/bash
+#
+# Display a syntax highlighted code
+
+
+error(){
+    echo "ERROR: $@" >&2
+}
+
+
+if (( $# == 0 )); then
+    error "Missing operand"
+    echo "Try 'chmod --help' for more information." >&2
+    exit 1
+elif (( $# == 1 )) && [[ $1 =~ ^(-h|--help|help)$ ]]; then
+    echo "Usage: ${0##*/} [OPTION] FILE"
+    echo "Display a syntax highlighted code"
+    echo
+    echo "  -l, --less            use less to display command output"
+    echo "  -x, --executable      display syntax of an executable on the system PATH"
+    exit 0
+fi
+
+parameters=$(getopt --options l,x --longoptions executable,less --name "${0##*/}" -- $@)
+eval set -- "$parameters"
+
+for argument in "$@"; do
+    if (( last_option == 1 )); then
+        files+=("$argument")
+    else
+        case $argument in
+            -l|--less)
+                options+=("less")
+                ;;
+            -x|--executable)
+                options+=("executable")
+                ;;
+            --)
+                last_option=1
+                ;;
+            *)
+                files+=("$argument")
+                ;;
+        esac
+    fi
+done
+
+if (( ${#files[@]} == 0 )); then
+    error "No target supplied"
+    exit 1
+elif (( ${#files[@]} > 1 )); then
+    error "More than one target supplied"
+    exit 1
+fi
+
+if [[ ${options[@]} = *executable* ]]; then
+    # set target to the full path of script
+    target=$(type -P "${files[0]}")
+else
+    target=${files[0]}
+fi
+
+if [[ -s $target && -r $target ]]; then
+    [[ -z ${arg##*.} ]] && lexer='-l bash'
+    comm='pygmentize -f 256 $lexer -O style=native "$target"'
+    if [[ ${options[@]} = *less* ]]; then
+        eval "$comm" | less -R
+    else
+        eval "$comm"
+    fi
+fi
