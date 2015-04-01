@@ -7,21 +7,25 @@ error(){
     echo "ERROR: $@" >&2
 }
 
-
-if (( $# == 0 )); then
-    error "Missing operand"
-    echo "Try 'chmod --help' for more information." >&2
-    exit 1
-elif (( $# == 1 )) && [[ $1 =~ ^(-h|--help|help)$ ]]; then
+usage(){
     echo "Usage: ${0##*/} [OPTION] FILE"
     echo "Display a syntax highlighted code"
     echo
     echo "  -l, --less            use less to display command output"
     echo "  -x, --executable      display syntax of an executable on the system PATH"
     exit 0
+}
+
+
+shopts='h,l,x'
+lopts='executable,help,less'
+
+parameters=$(getopt -o "$shopts" -l "$lopts" -n "${0##*/}" -- $@)
+
+if (( $? != 0 )); then
+    exit 1
 fi
 
-parameters=$(getopt --options l,x --longoptions executable,less --name "${0##*/}" -- $@)
 eval set -- "$parameters"
 
 for argument in "$@"; do
@@ -29,6 +33,9 @@ for argument in "$@"; do
         files+=("$argument")
     else
         case $argument in
+            -h|--help)
+                usage
+                ;;
             -l|--less)
                 options+=("less")
                 ;;
@@ -46,7 +53,8 @@ for argument in "$@"; do
 done
 
 if (( ${#files[@]} == 0 )); then
-    error "No target supplied"
+    error "Missing operand"
+    echo "Try 'chmod --help' for more information." >&2
     exit 1
 elif (( ${#files[@]} > 1 )); then
     error "More than one target supplied"
@@ -58,6 +66,11 @@ if [[ ${options[@]} = *executable* ]]; then
     target=$(type -P "${files[0]}")
 else
     target=${files[0]}
+fi
+
+if [[ ! -f $target ]]; then
+    error "'$target' does not exist"
+    exit 1
 fi
 
 if [[ -s $target && -r $target ]]; then
