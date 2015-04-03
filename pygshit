@@ -9,7 +9,7 @@ error(){
 
 usage(){
     echo "Usage: ${0##*/} [OPTION] FILE"
-    echo "Display a syntax highlighted code"
+    echo "Display syntax highlighted code"
     echo
     echo "  -l, --less            use less to display command output"
     echo "  -x, --executable      display syntax of an executable on the system PATH"
