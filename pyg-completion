@@ -3,6 +3,12 @@
 # bash completion file for pygmentize-addons
 
 
+_executables(){
+    while read -d $'\0' path; do
+        echo "${path##*/}"
+    done < <(echo -n "$PATH" | xargs -d: -n1 -I% -- find -L '%' -maxdepth 1 -mindepth 1 -type f -executable -print0 2>/dev/null) | sort -u
+}
+
 _have pygshit && {
 
 _pygshit(){
@@ -14,9 +20,7 @@ _pygshit(){
 
     case $prev in
     -x|--executable)
-        # _command
-        executables=$({ compgen -a; compgen -b; compgen -c; compgen -k; } | sort | uniq -u)
-        COMPREPLY=( $( compgen -W "$executables" -- "$cur" ) )
+        COMPREPLY=( $( compgen -W "$(_executables)" -- "$cur" ) )
         return 0
         ;;
     esac
@@ -42,9 +46,7 @@ _pygsparkle(){
 
     case $prev in
     -x|--executable)
-        # _command
-        executables=$({ compgen -a; compgen -b; compgen -c; compgen -k; } | sort | uniq -u)
-        COMPREPLY=( $( compgen -W "$executables" -- "$cur" ) )
+        COMPREPLY=( $( compgen -W "$(_executables)" -- "$cur" ) )
         return 0
         ;;
     esac
