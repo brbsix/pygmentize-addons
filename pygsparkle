@@ -20,67 +20,94 @@ handle-image(){
         error "'$1' does not appear to be an image file"
     else
         ristretto "$1" &>/dev/null
-        rm -f "$1"
+        rm -f "$1" &>/dev/null
         return 0
     fi
 
     return 1
 }
 
-
-if (( $# == 0 )); then
-    error "Missing operand"
-    echo "Try 'chmod --help' for more information." >&2
-    exit 1
-elif (( $# == 1 )) && [[ $1 =~ ^(-h|--help|help)$ ]]; then
+usage(){
     echo "Usage: ${0##*/} FILE..."
     echo "Display PNG images of syntax highlighted code"
     echo
     echo "  -x, --executable      display syntax of an executable on the system PATH"
     exit 0
+}
+
+
+parameters=$(getopt -o 'h,x' -l 'help,executable' -n "${0##*/}" -- $@)
+
+if (( $? != 0 )); then
+    exit 1
 fi
 
-for arg in "$@"; do
+eval set -- "$parameters"
 
-    # parse options
-    if [[ $arg =~ ^(-x|--executable)$ ]]; then
-        option=executable
+for argument in "$@"; do
+    if (( last_option == 1 )); then
+        files+=("$argument")
+    else
+        case $argument in
+            -h|--help)
+                usage
+                ;;
+            -x|--executable)
+                options+=("executable")
+                ;;
+            --)
+                last_option=1
+                ;;
+            *)
+                files+=("$argument")
+                ;;
+        esac
+    fi
+done
+
+if (( ${#files[@]} == 0 )); then
+    error "Missing operand"
+    echo "Try 'chmod --help' for more information." >&2
+    exit 1
+fi
+
+for file in "${files[@]}"; do
+
+    if [[ ${options[@]} = *executable* ]]; then
+        target=$(type -P "$file")
+    else
+        target=$file
+    fi
+
+    if [[ -z $target ]]; then
+        error "'$file' is not a valid target"
+        continue
+    elif [[ ! -f $target ]]; then
+        error "'$target' does not exist"
+        continue
+    elif [[ ! -r $target ]]; then
+        error "'$target' is not readable"
+        continue
+    elif [[ ! -s $target ]]; then
+        error "'$target' is empty"
+        continue
+    elif [[ ! $(file --brief --dereference --mime-type "$target") =~ ^text/ ]]; then
+        error "'$target' is not a text file"
         continue
     fi
 
-    if [[ $option = executable ]]; then
-        target=$(type -P "$arg")
-    else
-        target=$arg
+    # determine file extension
+    ext=$(awk -F. '/.\./ {print $NF}' <<<"${target##*/}")
+
+    # use bash lexer if target file does not have an extension
+    if [[ -z $ext ]]; then
+        lexer='-l bash'
+    elif [[ $ext =~ ^py[23]$ ]]; then
+        lexer='-l python'
     fi
 
-    # continue if file is non-empty and readable
-    if [[ -s $target && -r $target ]]; then
-
-        # determine file extension
-        ext=$(awk -F. '/.\./ {print $NF}' <<<"$target")
-        #ext=$(grep -oP '(?<=[^/\.]\.)[A-Za-z0-9]+$' <<<"$target")
-
-        if [[ -z $ext ]]; then  # use the Bash lexer if target file does not have an extension
-            lexer="-l bash"
-        fi
-        tempfile="/tmp/pygsparkle-${RANDOM}.png"
-        pygmentize -f png $lexer -O font_name="DejaVu Sans Mono",font_size=14,image_pad=15,line_number_pad=15,line_pad=6,style=native -o "$tempfile" "$target"
-        handle-image "$tempfile" &
-
-    # verbose error handling
-    else
-
-        # error if argument is not a file or unreadable
-        if [[ ! -f $target || ! -r $target ]]; then
-            error "'$target' is not a valid target"
-            continue
-        # error if argument is an empty file
-        elif [[ ! -s $target ]]; then
-            error "'$target' appears to be empty"
-            continue
-        fi
-
-    fi
+    tempfile="/tmp/pygsparkle-${RANDOM}.png"
+    pygmentize -f png $lexer -O "font_name=DejaVu Sans Mono,font_size=14,image_pad=15,line_number_pad=15,line_pad=6,style=native" -o "$tempfile" "$target"
+    handle-image "$tempfile" &
 
 done
