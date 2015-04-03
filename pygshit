@@ -61,27 +61,46 @@ elif (( ${#files[@]} > 1 )); then
     exit 1
 fi
 
+file=${files[0]}
+
 if [[ ${options[@]} = *executable* ]]; then
     # set target to the full path of script
-    target=$(type -P "${files[0]}")
+    target=$(type -P "$file")
 else
-    target=${files[0]}
+    target=$file
 fi
 
 if [[ -z $target ]]; then
-    error "'${files[0]}' is not a valid target"
+    error "'$file' is not a valid target"
     exit 1
 elif [[ ! -f $target ]]; then
     error "'$target' does not exist"
     exit 1
+elif [[ ! -r $target ]]; then
+    error "'$target' is not readable"
+    exit 1
+elif [[ ! -s $target ]]; then
+    error "'$target' is empty"
+    exit 1
+elif [[ ! $(file --brief --dereference --mime-type "$target") =~ ^text/ ]]; then
+    error "'$target' is not a text file"
+    exit 1
 fi
 
-if [[ -s $target && -r $target ]]; then
-    [[ -z ${arg##*.} ]] && lexer='-l bash'
-    comm='pygmentize -f 256 $lexer -O style=native "$target"'
-    if [[ ${options[@]} = *less* ]]; then
-        eval "$comm" | less -R
-    else
-        eval "$comm"
-    fi
+# determine file extension
+ext=$(awk -F. '/.\./ {print $NF}' <<<"${target##*/}")
+
+# use bash lexer if target file does not have an extension
+if [[ -z $ext ]]; then
+    lexer='-l bash'
+elif [[ $ext =~ ^py[23]$ ]]; then
+    lexer='-l python'
+fi
+
+comm='pygmentize -f 256 $lexer -O style=native "$target"'
+
+if [[ ${options[@]} = *less* ]]; then
+    eval "$comm" | less -R
+else
+    eval "$comm"
 fi
