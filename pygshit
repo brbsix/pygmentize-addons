@@ -68,7 +68,10 @@ else
     target=${files[0]}
 fi
 
-if [[ ! -f $target ]]; then
+if [[ -z $target ]]; then
+    error "'${files[0]}' is not a valid target"
+    exit 1
+elif [[ ! -f $target ]]; then
     error "'$target' does not exist"
     exit 1
 fi
