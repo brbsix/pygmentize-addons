@@ -1,0 +1,60 @@
+#!/bin/bash
+#
+# bash completion file for pygmentize-addons
+
+
+_have pygshit && {
+
+_pygshit(){
+    local cur prev
+
+    COMPREPLY=()
+    cur=${COMP_WORDS[COMP_CWORD]}
+    prev=${COMP_WORDS[COMP_CWORD-1]}
+
+    case $prev in
+    -x|--executable)
+        # _command
+        executables=$({ compgen -a; compgen -b; compgen -c; compgen -k; } | sort | uniq -u)
+        COMPREPLY=( $( compgen -W "$executables" -- "$cur" ) )
+        return 0
+        ;;
+    esac
+
+    if [[ $cur = -* ]]; then
+        COMPREPLY=( $( compgen -W '--executable -h --help -l --less -x' -- "$cur" ) )
+    fi
+
+}
+
+complete -F _pygshit pygshit
+
+}
+
+_have pygsparkle && {
+
+_pygsparkle(){
+    local cur prev
+
+    COMPREPLY=()
+    cur=${COMP_WORDS[COMP_CWORD]}
+    prev=${COMP_WORDS[COMP_CWORD-1]}
+
+    case $prev in
+    -x|--executable)
+        # _command
+        executables=$({ compgen -a; compgen -b; compgen -c; compgen -k; } | sort | uniq -u)
+        COMPREPLY=( $( compgen -W "$executables" -- "$cur" ) )
+        return 0
+        ;;
+    esac
+
+    if [[ $cur = -* ]]; then
+        COMPREPLY=( $( compgen -W '--executable -h --help -x' -- "$cur" ) )
+    fi
+
+}
+
+complete -F _pygsparkle pygsparkle
+
+}
