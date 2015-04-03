@@ -97,7 +97,7 @@ elif [[ $ext =~ ^py[23]$ ]]; then
     lexer='-l python'
 fi
 
-comm='pygmentize -f 256 $lexer -O style=native "$target"'
+comm='pygmentize -f 256 $lexer -O style=native "$target" 2>/dev/null'
 
 if [[ ${options[@]} = *less* ]]; then
     eval "$comm" | less -R
