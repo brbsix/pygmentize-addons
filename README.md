@@ -1,11 +1,11 @@
 # pygmentize-addons
 
-`pygmentize-addons` consists of two scripts to make use of Pygment's handy pygmentize program. The scripts are used for rapid inspection of syntax highlighted source code. `pygshit` is for use from the terminal and `pygsparkle` is used for GUI use.
+`pygmentize-addons` consists of two scripts to make use of Pygment's handy pygmentize program. The scripts are used for rapid inspection of syntax highlighted source code. `pygshit` is for terminal use and `pygsparkle` is for GUI use.
 
 Installation
 ------------
 
-To install on Linux systems:
+To install on Linux:
 
     sudo install pygshit pygsparkle /usr/local/bin
     sudo install -m 0644 pyg-completion /etc/bash_completion.d/pyg
@@ -23,7 +23,7 @@ To install Pygments to your local bin folder via pip:
 
     pip install --user Pygments
 
-*Note: pygsparkle requires an image viewer capable of viewing PNG images. It is currently configured to use ristretto (default image viewer on XFCE) but feel free to change it. It is stored in the VIEWER variable near the top of the file.*
+*Note: pygsparkle requires an image viewer capable of viewing PNG images. It is currently configured to use ristretto (default image viewer on XFCE) but feel free to change it. The value is stored in the VIEWER variable near the top of the file.*
 
 Usage
 -----
