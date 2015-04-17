@@ -46,7 +46,7 @@ To display code for an installed script (on the PATH) via `less`:
 
     pygshit -lx script
 
-`pygsparkle` is used to display PNG images of syntax highlighted code. It is used the same as `pygshit`, lacking only the '-l/--less' option.
+`pygsparkle` is used to display PNG images of syntax highlighted code. It is used the same as `pygshit`, lacking only the `-l/--less` option.
 
 License
 -------
