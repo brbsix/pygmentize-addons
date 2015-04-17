@@ -2,6 +2,9 @@
 #
 # Display PNG images of syntax highlighted code
 
+# program used to open PNG images (edit as necessary)
+VIEWER=ristretto
+
 
 error(){
     echo "ERROR: $@" >&2
@@ -19,7 +22,7 @@ handle-image(){
     elif [[ ! $1 =~ \.(bmp|gif|img|jpeg|jpg|png)$ ]]; then
         error "'$1' does not appear to be an image file"
     else
-        ristretto "$1" &>/dev/null
+        "$VIEWER" "$1" &>/dev/null
         rm -f "$1" &>/dev/null
         return 0
     fi
