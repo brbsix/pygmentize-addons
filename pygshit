@@ -35,10 +35,10 @@ for argument in "$@"; do
                 usage
                 ;;
             -l|--less)
-                options+=("less")
+                options+=('less')
                 ;;
             -x|--executable)
-                options+=("executable")
+                options+=('executable')
                 ;;
             --)
                 last_option=1

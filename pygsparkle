@@ -54,7 +54,7 @@ for argument in "$@"; do
                 usage
                 ;;
             -x|--executable)
-                options+=("executable")
+                options+=('executable')
                 ;;
             --)
                 last_option=1
