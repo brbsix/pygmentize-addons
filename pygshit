@@ -20,11 +20,13 @@ usage(){
 shopts='h,l,x'
 lopts='executable,help,less'
 
-eval set -- "$(getopt -o "$shopts" -l "$lopts" -n "${0##*/}" -- "$@")"
+params=$(getopt -o "$shopts" -l "$lopts" -n "${0##*/}" -- "$@")
 
 if (( $? != 0 )); then
     exit 1
 fi
+
+eval set -- "$params"
 
 for argument in "$@"; do
     if (( last_option == 1 )); then

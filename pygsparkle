@@ -39,11 +39,13 @@ usage(){
 }
 
 
-eval set -- "$(getopt -o 'h,x' -l 'help,executable' -n "${0##*/}" -- "$@")"
+params=$(getopt -o 'h,x' -l 'help,executable' -n "${0##*/}" -- "$@")
 
 if (( $? != 0 )); then
     exit 1
 fi
+
+eval set -- "$params"
 
 for argument in "$@"; do
     if (( last_option == 1 )); then
