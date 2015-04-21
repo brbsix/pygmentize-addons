@@ -4,9 +4,7 @@
 
 
 _executables(){
-    while read -d $'\0' path; do
-        echo "${path##*/}"
-    done < <(echo -n "$PATH" | xargs -d: -n1 -I% -- find -L '%' -maxdepth 1 -mindepth 1 -type f -executable -print0 2>/dev/null) | sort -u
+    echo -n "$PATH" | xargs -d: -I{} -r -- find -L {} -maxdepth 1 -mindepth 1 -type f -executable -printf '%P\n' 2>/dev/null | sort -u
 }
 
 _have pygshit && {
