@@ -70,6 +70,8 @@ else
     target=$file
 fi
 
+mimetype=$(file --brief --dereference --mime-type "$target" 2>/dev/null)
+
 if [[ -z $target ]]; then
     error "'$file' is not a valid target"
     exit 1
@@ -82,7 +84,7 @@ elif [[ ! -r $target ]]; then
 elif [[ ! -s $target ]]; then
     error "'$target' is empty"
     exit 1
-elif [[ ! $(file --brief --dereference --mime-type "$target") =~ ^text/ ]]; then
+elif [[ ! $mimetype =~ ^text/ ]]; then
     error "'$target' is not a text file"
     exit 1
 fi
@@ -91,9 +93,9 @@ fi
 ext=$(awk -F. '/.\./ {print $NF}' <<<"${target##*/}")
 
 # use bash lexer if target file does not have an extension
-if [[ -z $ext ]]; then
+if [[ -z $ext || $mimetype =~ ^text/(plain|x-shellscript)$ ]]; then
     lexer='-l bash'
-elif [[ $ext =~ ^py[23]$ ]]; then
+elif [[ $ext =~ ^py[23]$ || $mimetype = 'text/x-python' ]]; then
     lexer='-l python'
 fi
 
