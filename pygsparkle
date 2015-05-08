@@ -31,7 +31,7 @@ handle-image(){
 }
 
 usage(){
-    echo "Usage: ${0##*/} FILE..."
+    echo "Usage: $PROGRAM FILE..."
     echo "Display PNG images of syntax highlighted code"
     echo
     echo "  -x, --executable      display syntax of an executable on the system PATH"
@@ -39,7 +39,8 @@ usage(){
 }
 
 
-params=$(getopt -o 'h,x' -l 'help,executable' -n "${0##*/}" -- "$@") || exit 1
+PROGRAM=${0##*/}
+params=$(getopt -o 'h,x' -l 'help,executable' -n "$PROGRAM" -- "$@") || exit 1
 
 eval set -- "$params"
 
@@ -65,8 +66,8 @@ for argument in "$@"; do
 done
 
 if (( ${#files[@]} == 0 )); then
-    error "Missing operand"
-    echo "Try 'chmod --help' for more information." >&2
+    echo "$PROGRAM: missing operand" >&2
+    echo "Try '$PROGRAM --help' for more information." >&2
     exit 1
 fi
 

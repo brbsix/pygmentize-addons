@@ -8,7 +8,7 @@ error(){
 }
 
 usage(){
-    echo "Usage: ${0##*/} [OPTION] FILE"
+    echo "Usage: $PROGRAM [OPTION] FILE"
     echo "Display syntax highlighted code"
     echo
     echo "  -l, --less            use less to display command output"
@@ -19,8 +19,9 @@ usage(){
 
 shopts='h,l,x'
 lopts='executable,help,less'
+PROGRAM=${0##*/}
 
-params=$(getopt -o "$shopts" -l "$lopts" -n "${0##*/}" -- "$@") || exit 1
+params=$(getopt -o "$shopts" -l "$lopts" -n "$PROGRAM" -- "$@") || exit 1
 
 eval set -- "$params"
 
@@ -49,8 +50,8 @@ for argument in "$@"; do
 done
 
 if (( ${#files[@]} == 0 )); then
-    error "Missing operand"
-    echo "Try 'chmod --help' for more information." >&2
+    echo "$PROGRAM: missing operand" >&2
+    echo "Try '$PROGRAM --help' for more information." >&2
     exit 1
 elif (( ${#files[@]} > 1 )); then
     error "More than one target supplied"
