@@ -17,10 +17,10 @@ _pygshit(){
     prev=${COMP_WORDS[COMP_CWORD-1]}
 
     case $prev in
-    -*x*|--executable)
-        COMPREPLY=( $( compgen -W "$(_executables)" -- "$cur" ) )
-        return 0
-        ;;
+        -*x*|--executable)
+            COMPREPLY=( $( compgen -W "$(_executables)" -- "$cur" ) )
+            return 0
+            ;;
     esac
 
     if [[ $cur = -* ]]; then
@@ -43,10 +43,10 @@ _pygsparkle(){
     prev=${COMP_WORDS[COMP_CWORD-1]}
 
     case $prev in
-    -*x*|--executable)
-        COMPREPLY=( $( compgen -W "$(_executables)" -- "$cur" ) )
-        return 0
-        ;;
+        -*x*|--executable)
+            COMPREPLY=( $( compgen -W "$(_executables)" -- "$cur" ) )
+            return 0
+            ;;
     esac
 
     if [[ $cur = -* ]]; then
