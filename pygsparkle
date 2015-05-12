@@ -23,8 +23,7 @@ handle-image(){
         error "'$1' does not appear to be an image file"
     else
         "$VIEWER" "$1" &>/dev/null
-        rm -f "$1" &>/dev/null
-        return 0
+        rm -f "$1" &>/dev/null && return 0
     fi
 
     return 1
