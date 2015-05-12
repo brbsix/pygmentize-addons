@@ -2,9 +2,9 @@
 #
 # Display PNG images of syntax highlighted code
 
+
 # program used to open PNG images (edit as necessary)
 VIEWER=ristretto
-
 
 error(){
     echo "ERROR: $@" >&2
@@ -30,6 +30,53 @@ handle-image(){
     return 1
 }
 
+pygrunner(){
+
+    local extension lexer mimetype target tempfile
+
+    if [[ "${OPTIONS[@]}" = *executable* ]]; then
+        target=$(type -P "$1")
+    else
+        target=$1
+    fi
+
+    mimetype=$(file --brief --dereference --mime-type "$target" 2>/dev/null)
+
+    if [[ -z $target ]]; then
+        error "'$1' is not a valid target"
+        return 1
+    elif [[ ! -f $target ]]; then
+        error "'$target' does not exist"
+        return 1
+    elif [[ ! -r $target ]]; then
+        error "'$target' is not readable"
+        return 1
+    elif [[ ! -s $target ]]; then
+        error "'$target' is empty"
+        return 1
+    elif [[ ! $mimetype =~ ^text/ ]]; then
+        error "'$target' is not a text file"
+        return 1
+    fi
+
+    # determine file extension
+    extension=$(awk -F. '/.\./ {print $NF}' <<<"${target##*/}")
+
+    # use bash lexer if target file does not have an extension
+    if [[ -z $extension || $mimetype =~ ^text/(plain|x-shellscript)$ ]]; then
+        lexer='-l bash'
+    elif [[ $extension =~ ^py[23]$ || $mimetype = 'text/x-python' ]]; then
+        lexer='-l python'
+    fi
+
+    tempfile="/tmp/pygsparkle-${RANDOM}.png"
+
+    if pygmentize -f png $lexer -O 'font_name=DejaVu Sans Mono,font_size=14,image_pad=15,line_number_pad=15,line_pad=6,style=native' -o "$tempfile" "$target"; then
+        handle-image "$tempfile" &
+    fi
+
+}
+
 usage(){
     echo "Usage: $PROGRAM FILE..."
     echo "Display PNG images of syntax highlighted code"
@@ -53,7 +100,7 @@ for argument in "$@"; do
                 usage
                 ;;
             -x|--executable)
-                options+=('executable')
+                OPTIONS+=('executable')
                 ;;
             --)
                 last_option=1
@@ -72,44 +119,5 @@ if (( ${#files[@]} == 0 )); then
 fi
 
 for file in "${files[@]}"; do
-
-    if [[ ${options[@]} = *executable* ]]; then
-        target=$(type -P "$file")
-    else
-        target=$file
-    fi
-
-    mimetype=$(file --brief --dereference --mime-type "$target" 2>/dev/null)
-
-    if [[ -z $target ]]; then
-        error "'$file' is not a valid target"
-        continue
-    elif [[ ! -f $target ]]; then
-        error "'$target' does not exist"
-        continue
-    elif [[ ! -r $target ]]; then
-        error "'$target' is not readable"
-        continue
-    elif [[ ! -s $target ]]; then
-        error "'$target' is empty"
-        continue
-    elif [[ ! $mimetype =~ ^text/ ]]; then
-        error "'$target' is not a text file"
-        continue
-    fi
-
-    # determine file extension
-    ext=$(awk -F. '/.\./ {print $NF}' <<<"${target##*/}")
-
-    # use bash lexer if target file does not have an extension
-    if [[ -z $ext || $mimetype =~ ^text/(plain|x-shellscript)$ ]]; then
-        lexer='-l bash'
-    elif [[ $ext =~ ^py[23]$ || $mimetype = 'text/x-python' ]]; then
-        lexer='-l python'
-    fi
-
-    tempfile="/tmp/pygsparkle-${RANDOM}.png"
-    pygmentize -f png $lexer -O "font_name=DejaVu Sans Mono,font_size=14,image_pad=15,line_number_pad=15,line_pad=6,style=native" -o "$tempfile" "$target"
-    handle-image "$tempfile" &
-
+    pygrunner "$file"
 done
