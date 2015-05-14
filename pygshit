@@ -58,13 +58,12 @@ pygrunner(){
 
     # execute the pygmentize command
     if [[ "${OPTIONS[@]}" = *less* ]]; then
-        eval "$comm" | less -R
+        eval -- "$comm" | less -R
     else
-        eval "$comm"
+        eval -- "$comm"
     fi
 
 }
-
 
 usage(){
     cat <<-EOF
