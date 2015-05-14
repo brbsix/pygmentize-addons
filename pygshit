@@ -45,14 +45,16 @@ pygrunner(){
     # determine file extension
     extension=$(awk -F. '/.\./ {print $NF}' <<<"${target##*/}")
 
-    # use bash lexer if target file does not have an extension
-    if [[ -z $extension || $mimetype =~ ^text/(plain|x-shellscript)$ ]]; then
+    # determine pygmentize lexer via mime type and/or extension
+    if [[ $mimetype =~ ^text/(plain|x-shellscript)$ ]]; then
         lexer='-l bash'
-    elif [[ $extension =~ ^py[23]$ || $mimetype = 'text/x-python' ]]; then
+    elif [[ $mimetype = 'text/x-python' || $extension =~ ^py[23]$ ]]; then
         lexer='-l python'
+    elif [[ $mimetype = 'application/xml' ]]; then
+        lexer='-l xml'
     fi
 
-    # set the pygmentize command
+    # configure the pygmentize command
     comm='pygmentize -f 256 $lexer -O style=native "$target" 2>/dev/null'
 
     # execute the pygmentize command
