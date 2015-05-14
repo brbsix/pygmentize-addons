@@ -55,7 +55,10 @@ pygrunner(){
     elif [[ ! -s $target ]]; then
         error "'$target' is empty"
         return 1
-    elif [[ ! $mimetype =~ ^text/ ]]; then
+    fi
+
+    # verify that $target is a text file (unless --force is used)
+    if [[ "${OPTIONS[@]}" != *force* && ! $mimetype =~ ^text/ ]]; then
         error "'$target' is not a text file"
         return 1
     fi
@@ -78,11 +81,15 @@ pygrunner(){
 
 }
 
+
 usage(){
-    echo "Usage: $PROGRAM FILE..."
-    echo "Display PNG images of syntax highlighted code"
-    echo
-    echo "  -x, --executable      display syntax of an executable on the system PATH"
+    cat <<-EOF
+	Usage: $PROGRAM FILE...
+	Display PNG images of syntax highlighted code.
+
+	  -f, --force           continue even if mime type of FILE is not text/plain
+	  -x, --executable      display syntax of an executable on the system PATH
+	EOF
     exit 0
 }
 
@@ -97,6 +104,8 @@ for argument in "$@"; do
         files+=("$argument")
     else
         case $argument in
+            -f|--force)
+                OPTIONS+=('force')
             -h|--help)
                 usage
                 ;;
