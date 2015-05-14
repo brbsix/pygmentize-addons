@@ -10,6 +10,7 @@ error(){
     echo "ERROR: $@" >&2
 }
 
+
 handle-image(){
     if (( $# == 0 )); then
         error "No image file was specified"
@@ -28,6 +29,7 @@ handle-image(){
 
     return 1
 }
+
 
 pygrunner(){
 
