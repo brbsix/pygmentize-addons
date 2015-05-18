@@ -54,7 +54,7 @@ pygrunner(){
     fi
 
     # configure the pygmentize command
-    comm='pygmentize -f 256 $lexer -O style=native "$target" 2>/dev/null'
+    comm='pygmentize -f 256 $lexer -O style=native "$target"'
 
     # execute the pygmentize command
     if [[ "${OPTIONS[@]}" = *less* ]]; then
