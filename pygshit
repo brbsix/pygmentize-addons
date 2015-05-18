@@ -45,7 +45,7 @@ pygrunner(){
     extension=$(awk -F. '/.\./ {print $NF}' <<<"${target##*/}")
 
     # determine pygmentize lexer via mime type and/or extension
-    if [[ $mimetype =~ ^text/(plain|x-shellscript)$ ]]; then
+    if [[ $mimetype =~ ^text/(plain|x-shellscript)$ && -z $extension ]]; then
         lexer='-l bash'
     elif [[ $mimetype = 'text/x-python' || $extension =~ ^py[23]$ ]]; then
         lexer='-l python'
