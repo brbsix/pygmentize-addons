@@ -89,7 +89,7 @@ pygrunner(){
 
 usage(){
     cat <<-EOF
-	Usage: $PROGRAM FILE...
+	Usage: $PROGRAM [OPTION]... FILE...
 	Display PNG images of syntax highlighted code.
 
 	  -f, --force           continue even if mime type of FILE is not text/plain

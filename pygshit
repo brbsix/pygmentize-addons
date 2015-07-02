@@ -73,7 +73,7 @@ pygrunner(){
 
 usage(){
     cat <<-EOF
-	Usage: $PROGRAM [OPTION] FILE
+	Usage: $PROGRAM [OPTION]... FILE...
 	Display syntax highlighted code.
 
 	  -f, --force           continue even if mime type of FILE is not text/plain
