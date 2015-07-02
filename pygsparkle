@@ -32,6 +32,7 @@ handle-image(){
 pygrunner(){
 
     local extension lexer mimetype target tempfile
+    unset extension lexer mimetype target tempfile
 
     if [[ "${OPTIONS[@]}" = *executable* ]]; then
         target=$(type -P "$1")

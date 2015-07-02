@@ -9,7 +9,8 @@ error(){
 
 pygrunner(){
 
-    local comm extension lexer mimetype target
+    local cmd extension lexer mimetype target
+    unset cmd extension lexer mimetype target
 
     if [[ "${OPTIONS[@]}" = *executable* ]]; then
         # set target to the full path of script
@@ -54,13 +55,13 @@ pygrunner(){
     fi
 
     # configure the pygmentize command
-    comm='pygmentize -f 256 $lexer -O style=native "$target"'
+    cmd='pygmentize -f 256 $lexer -O style=native "$target"'
 
     # execute the pygmentize command
     if [[ "${OPTIONS[@]}" = *less* ]]; then
-        eval -- "$comm" | less -R
+        eval -- "$cmd" | less -R
     else
-        eval -- "$comm"
+        eval -- "$cmd"
     fi
 
 }
