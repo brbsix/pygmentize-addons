@@ -92,6 +92,10 @@ params=$(getopt -o "$shopts" -l "$lopts" -n "$PROGRAM" -- "$@") || exit 1
 
 eval set -- "$params"
 
+files=()
+last_option=0
+OPTIONS=()
+
 for argument in "$@"; do
     if (( last_option == 1 )); then
         files+=("$argument")
