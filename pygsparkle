@@ -115,6 +115,7 @@ for argument in "$@"; do
         case $argument in
             -f|--force)
                 OPTIONS+=('force')
+                ;;
             -h|--help)
                 usage
                 ;;
