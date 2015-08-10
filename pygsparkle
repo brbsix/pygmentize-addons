@@ -29,6 +29,17 @@ handle-image(){
     return 1
 }
 
+pygmentize(){
+    "python${PYVER}" - "$@" <<-EOF
+	import sys
+	import pygments.cmdline
+	try:
+	    sys.exit(pygments.cmdline.main(sys.argv))
+	except KeyboardInterrupt:
+	    sys.exit(1)
+	EOF
+}
+
 pygrunner(){
 
     local extension lexer mimetype target tempfile
@@ -87,6 +98,24 @@ pygrunner(){
 
 }
 
+pyver(){
+    # ensure python is installed
+    hash "python${1}" &>/dev/null || return 1
+
+    # ensure Pygments is installed
+    "python${1}" - <<-EOF
+	import sys
+
+	try:
+	    import pygments.cmdline
+	    sys.exit(0)
+	except ImportError:
+	    pass
+
+	sys.exit(1)
+	EOF
+}
+
 usage(){
     cat <<-EOF
 	Usage: $PROGRAM [OPTION]... FILE...
@@ -135,6 +164,15 @@ done
 if (( ${#files[@]} == 0 )); then
     echo "$PROGRAM: missing operand" >&2
     echo "Try '$PROGRAM --help' for more information." >&2
+    exit 1
+fi
+
+if pyver 2; then
+    PYVER=2
+elif pyver 3; then
+    PYVER=3
+else
+    error "Pygments does not appear to be installed"
     exit 1
 fi
 
