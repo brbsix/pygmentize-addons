@@ -13,7 +13,7 @@ To install on Linux:
 Requirements
 ------------
 
-`pygmentize-addons` requires pygmentize which is part of Pygments. Most people will want to install this via their distribution's package manager. It is also available via pip (package manager for Python).
+`pygmentize-addons` requires the `pygmentize` utility which is part of Pygments. Most people will want to install this via their distribution's package manager. It is also available via pip (package manager for Python).
 
 To install Pygments to your system:
 
@@ -23,7 +23,11 @@ To install Pygments to your local bin folder via pip:
 
     pip install --user Pygments
 
-*Note: pygsparkle requires an image viewer capable of viewing PNG images. It is currently configured to use ristretto (default image viewer on XFCE) but feel free to change it. The value is stored in the VIEWER variable near the top of the file.*
+If `python3-pygments` is already installed globally, lacking `pygmentize` and prohibiting you from normally installing `Pygments` locally via `pip`, you can use the following:
+
+    pip install --user --upgrade Pygments
+
+*Note: `pygsparkle` requires an image viewer capable of viewing PNG images. It is currently configured to use ristretto (the default image viewer in XFCE) but feel free to change it. The value is stored in the VIEWER variable near the top of the file.*
 
 Usage
 -----
