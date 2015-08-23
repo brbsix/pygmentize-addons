@@ -26,6 +26,10 @@ pygrunner(){
     if [[ "${OPTIONS[@]}" = *executable* ]]; then
         # set target to the full path of script
         target=$(type -P "$1")
+        if [[ -z $target ]]; then
+            error "Unable to find '$1' on PATH"
+            return 1
+        fi
     else
         target=$1
     fi
@@ -33,11 +37,11 @@ pygrunner(){
     # determine file type
     mimetype=$(file --brief --dereference --mime-type "$target" 2>/dev/null)
 
-    if [[ -z $target ]]; then
-        error "'$1' is not a valid target"
+    if [[ ! -e $target ]]; then
+        error "'$target' does not exist"
         return 1
     elif [[ ! -f $target ]]; then
-        error "'$target' does not exist"
+        error "'$target' is not a file"
         return 1
     elif [[ ! -r $target ]]; then
         error "'$target' is not readable"
