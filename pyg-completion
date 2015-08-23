@@ -7,6 +7,11 @@ _executables(){
     echo -n "$PATH" | xargs -d: -I{} -- find -L {} -maxdepth 1 -type f -executable -printf '%P\n' 2>/dev/null | sort -u
 }
 
+_lexers(){
+    [[ -z $_LEXERS ]] && _LEXERS=$(pygmentize -L lexers | awk '/^* / {sub("^* ", ""); gsub(",", ""); sub(":$", ""); print}' | paste -sd' ')
+    echo "$_LEXERS"
+}
+
 _have pygshit && {
 
 _pygshit(){
@@ -17,6 +22,12 @@ _pygshit(){
     prev=${COMP_WORDS[COMP_CWORD-1]}
 
     case $prev in
+        --lexer)
+            # cache lexers in namespace
+            _lexers >/dev/null
+            COMPREPLY=( $( compgen -W "$(_lexers)" -- "$cur" ) )
+            return 0
+            ;;
         -*x*|--executable)
             COMPREPLY=( $( compgen -W "$(_executables)" -- "$cur" ) )
             return 0
@@ -24,7 +35,7 @@ _pygshit(){
     esac
 
     if [[ $cur = -* ]]; then
-        COMPREPLY=( $( compgen -W '--executable -h --help -l --less -x' -- "$cur" ) )
+        COMPREPLY=( $( compgen -W '--executable -f --force -h --help -l --less --lexer -x' -- "$cur" ) )
     fi
 
 }
@@ -43,6 +54,12 @@ _pygsparkle(){
     prev=${COMP_WORDS[COMP_CWORD-1]}
 
     case $prev in
+        --lexer)
+            # cache lexers in namespace
+            _lexers >/dev/null
+            COMPREPLY=( $( compgen -W "$(_lexers)" -- "$cur" ) )
+            return 0
+            ;;
         -*x*|--executable)
             COMPREPLY=( $( compgen -W "$(_executables)" -- "$cur" ) )
             return 0
@@ -50,7 +67,7 @@ _pygsparkle(){
     esac
 
     if [[ $cur = -* ]]; then
-        COMPREPLY=( $( compgen -W '--executable -h --help -x' -- "$cur" ) )
+        COMPREPLY=( $( compgen -W '--executable -f --force --gui -h --help --lexer -x' -- "$cur" ) )
     fi
 
 }
