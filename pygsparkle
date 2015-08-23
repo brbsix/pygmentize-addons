@@ -77,22 +77,26 @@ pygrunner(){
         return 1
     fi
 
-    # determine file extension
-    extension=$(awk -F. '/.\./ {print $NF}' <<<"${target##*/}")
+    if [[ -n $LEXER ]]; then
+        lexer="-l $LEXER"
+    else
+        # determine file extension
+        extension=$(awk -F. '/.\./ {print $NF}' <<<"${target##*/}")
 
-    # determine pygmentize lexer via mime type and/or extension
-    if [[ $mimetype =~ ^text/(plain|x-shellscript)$ && -z $extension ]]; then
-        lexer='bash'
-    elif [[ $mimetype = 'text/x-perl' ]]; then
-        lexer='perl'
-    elif [[ $mimetype = 'text/x-python' || $extension =~ ^py[23]$ ]]; then
-        lexer='python'
-    elif [[ $mimetype = 'application/xml' ]]; then
-        lexer='xml'
+        # determine pygmentize lexer via mime type and/or extension
+        if [[ $mimetype =~ ^text/(plain|x-shellscript)$ && -z $extension ]]; then
+            lexer='bash'
+        elif [[ $mimetype = 'text/x-perl' ]]; then
+            lexer='perl'
+        elif [[ $mimetype = 'text/x-python' || $extension =~ ^py[23]$ ]]; then
+            lexer='python'
+        elif [[ $mimetype = 'application/xml' ]]; then
+            lexer='xml'
+        fi
+
+        # add lexer option prefix (if necessary)
+        [[ -n $lexer ]] && lexer="-l $lexer"
     fi
-
-    # add lexer option prefix (if necessary)
-    [[ -n $lexer ]] && lexer="-l $lexer"
 
     tempfile="/tmp/pygsparkle-${RANDOM}.png"
 
@@ -127,42 +131,53 @@ usage(){
 
 	  -f, --force           continue even if mime type of FILE is not text/plain
 	  -x, --executable      display syntax of an executable on the system PATH
+	  --lexer LEXER         indicate a lexer to use (default is to detect automatically)
 	EOF
     exit 0
 }
 
 
 PROGRAM=${0##*/}
-params=$(getopt -o 'h,x' -l 'help,executable' -n "$PROGRAM" -- "$@") || exit 1
+params=$(getopt -o 'h,x' -l 'help,executable,lexer:' -n "$PROGRAM" -- "$@") || exit 1
 
 eval set -- "$params"
 
-files=()
-last_option=0
 OPTIONS=()
+LEXER=
 
-for argument in "$@"; do
-    if (( last_option == 1 )); then
-        files+=("$argument")
-    else
-        case $argument in
-            -f|--force)
-                OPTIONS+=('force')
-                ;;
-            -h|--help)
-                usage
-                ;;
-            -x|--executable)
-                OPTIONS+=('executable')
-                ;;
-            --)
-                last_option=1
-                ;;
-            *)
-                files+=("$argument")
-                ;;
-        esac
-    fi
+while true; do
+    case "$1" in
+        -f|--force)
+            OPTIONS+=('force')
+            shift
+            ;;
+        -h|--help)
+            usage
+            ;;
+        --lexer)
+            shift
+            LEXER=$1
+            if [[ -z $LEXER ]]; then
+                error "Please indicate a lexer to use"
+                exit 1
+            fi
+            shift
+            ;;
+        -x|--executable)
+            OPTIONS+=('executable')
+            shift
+            ;;
+        --)
+            shift
+            break
+            ;;
+    esac
+done
+
+files=()
+
+for arg in "$@"; do
+    files+=("$arg")
 done
 
 if (( ${#files[@]} == 0 )); then
