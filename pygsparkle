@@ -7,7 +7,7 @@
 VIEWER=ristretto
 
 error(){
-    echo "ERROR: $@" >&2
+    echo "ERROR: $*" >&2
 }
 
 handle-image(){
