@@ -8,6 +8,27 @@ VIEWER=ristretto
 
 error(){
     echo "ERROR: $*" >&2
+
+    if [[ "${OPTIONS[@]}" = *gui* ]]; then
+        ERRORS+=("$*")
+    fi
+}
+
+error_simple(){
+    echo "$*" >&2
+
+    if [[ "${OPTIONS[@]}" = *gui* ]]; then
+        ERRORS+=("$*")
+    fi
+}
+
+exit(){
+    if [[ "${OPTIONS[@]}" = *gui* && ${#ERRORS[@]} -gt 0 ]]; then
+        zenity --error --text "$(printf '%s\n' "${ERRORS[@]}")" 2>/dev/null
+    fi
+
+    unset exit
+    exit "${1:-0}"
 }
 
 handle-image(){
@@ -130,6 +151,7 @@ usage(){
 	Display PNG images of syntax highlighted code.
 
 	  -f, --force           continue even if mime type of FILE is not text/plain
+	  --gui                 display error messages via zenity
 	  -x, --executable      display syntax of an executable on the system PATH
 	  --lexer LEXER         indicate a lexer to use (default is to detect automatically)
 	EOF
@@ -138,7 +160,7 @@ usage(){
 
 
 PROGRAM=${0##*/}
-params=$(getopt -o 'h,x' -l 'help,executable,lexer:' -n "$PROGRAM" -- "$@") || exit 1
+params=$(getopt -o 'h,x' -l 'executable,help,gui,lexer:' -n "$PROGRAM" -- "$@") || exit 1
 
 eval set -- "$params"
 
@@ -149,6 +171,10 @@ while true; do
     case "$1" in
         -f|--force)
             OPTIONS+=('force')
+            shift
+            ;;
+        --gui)
+            OPTIONS+=('gui')
             shift
             ;;
         -h|--help)
@@ -181,8 +207,8 @@ for arg in "$@"; do
 done
 
 if (( ${#files[@]} == 0 )); then
-    echo "$PROGRAM: missing operand" >&2
-    echo "Try '$PROGRAM --help' for more information." >&2
+    error_simple "$PROGRAM: missing operand"
+    error_simple "Try '$PROGRAM --help' for more information."
     exit 1
 fi
 
@@ -198,3 +224,5 @@ fi
 for file in "${files[@]}"; do
     pygrunner "$file"
 done
+
+exit "$?"
