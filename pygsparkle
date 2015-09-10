@@ -52,12 +52,19 @@ handle-image(){
 
 pygmentize(){
     "python${PYVER}" - "$@" <<-EOF
-	import sys
+
 	import pygments.cmdline
+	import signal
+	import sys
+
+	# ignore broken pipe
+	signal.signal(signal.SIGPIPE, signal.SIG_DFL)
+
 	try:
 	    sys.exit(pygments.cmdline.main(sys.argv))
 	except KeyboardInterrupt:
 	    sys.exit(1)
+
 	EOF
 }
 
