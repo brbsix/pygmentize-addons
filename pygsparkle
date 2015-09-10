@@ -166,6 +166,7 @@ eval set -- "$params"
 
 OPTIONS=()
 LEXER=
+PYVER=
 
 while true; do
     case "$1" in
