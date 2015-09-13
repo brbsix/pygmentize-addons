@@ -28,7 +28,7 @@ _pygshit(){
             COMPREPLY=( $( compgen -W "$(_lexers)" -- "$cur" ) )
             return 0
             ;;
-        -*x*|--executable)
+        -*x|--executable)
             COMPREPLY=( $( compgen -W "$(_executables)" -- "$cur" ) )
             return 0
             ;;
@@ -60,7 +60,7 @@ _pygsparkle(){
             COMPREPLY=( $( compgen -W "$(_lexers)" -- "$cur" ) )
             return 0
             ;;
-        -*x*|--executable)
+        -*x|--executable)
             COMPREPLY=( $( compgen -W "$(_executables)" -- "$cur" ) )
             return 0
             ;;
