@@ -20,7 +20,10 @@ __pyg(){
     case $prev in
         --lexer)
             # cache lexers in global namespace
-            [[ -z $__pyg_lexers ]] && __pyg_lexers=$(pygmentize -L lexers | awk '/^* .+:$/ {sub("^* ", ""); gsub(",", ""); sub(":$", ""); print}' | paste -sd' ')
+            if hash pygmentize &>/dev/null && [[ -z $__pyg_lexers ]]; then
+                __pyg_lexers=$(pygmentize -L lexers 2>/dev/null | awk '/^* .+:$/ {sub("^* ", ""); gsub(",", ""); sub(":$", ""); print}' | paste -sd' ')
+            fi
+
             readarray -t COMPREPLY < <(compgen -W "$__pyg_lexers" -- "$cur")
             return 0
             ;;
