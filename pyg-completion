@@ -21,10 +21,13 @@ __pyg(){
         --lexer)
             # cache lexers in global namespace
             if hash pygmentize &>/dev/null && [[ -z $__pyg_lexers ]]; then
-                __pyg_lexers=$(pygmentize -L lexers 2>/dev/null | awk '/^* .+:$/ {sub("^* ", ""); gsub(",", ""); sub(":$", ""); print}' | paste -sd' ')
+                readarray -t __pyg_lexers < <(pygmentize -L lexers 2>/dev/null | awk '/^* .+:$/ {sub("^* ", ""); gsub(",", ""); sub(":$", ""); split($0, l); for (i=1; i<=length(l); i++) print l[i]}')
             fi
 
-            readarray -t COMPREPLY < <(compgen -W "$__pyg_lexers" -- "$cur")
+            if (( ${#__pyg_lexers[@]} > 0 )); then
+                readarray -t COMPREPLY < <(compgen -W "${__pyg_lexers[*]}" -- "$cur")
+            fi
+
             return 0
             ;;
         -*x|--executable)
