@@ -7,57 +7,21 @@ _executables(){
     echo -n "$PATH" | xargs -d: -I{} -- find -L {} -maxdepth 1 -type f -executable -printf '%P\n' 2>/dev/null | sort -u
 }
 
-_lexers(){
-    [[ -z $_LEXERS ]] && _LEXERS=$(pygmentize -L lexers | awk '/^* / {sub("^* ", ""); gsub(",", ""); sub(":$", ""); print}' | paste -sd' ')
-    echo "$_LEXERS"
-}
+__pyg(){
 
-_have pygshit && {
-
-_pygshit(){
-    local cur prev
+    local cur prev script
 
     COMPREPLY=()
+
+    script=${COMP_WORDS[0]}
     cur=${COMP_WORDS[COMP_CWORD]}
     prev=${COMP_WORDS[COMP_CWORD-1]}
 
     case $prev in
         --lexer)
-            # cache lexers in namespace
-            _lexers >/dev/null
-            readarray -t COMPREPLY < <(compgen -W "$(_lexers)" -- "$cur" )
-            return 0
-            ;;
-        -*x|--executable)
-            readarray -t COMPREPLY < <(compgen -W "$(_executables)" -- "$cur" )
-            return 0
-            ;;
-    esac
-
-    if [[ $cur = -* ]]; then
-        readarray -t COMPREPLY < <(compgen -W '--executable -f --force -h --help -l --less --lexer -x' -- "$cur")
-    fi
-
-}
-
-complete -F _pygshit -o default pygshit
-
-}
-
-_have pygsparkle && {
-
-_pygsparkle(){
-    local cur prev
-
-    COMPREPLY=()
-    cur=${COMP_WORDS[COMP_CWORD]}
-    prev=${COMP_WORDS[COMP_CWORD-1]}
-
-    case $prev in
-        --lexer)
-            # cache lexers in namespace
-            _lexers >/dev/null
-            readarray -t COMPREPLY < <(compgen -W "$(_lexers)" -- "$cur")
+            # cache lexers in global namespace
+            [[ -z $__pyg_lexers ]] && __pyg_lexers=$(pygmentize -L lexers | awk '/^* .+:$/ {sub("^* ", ""); gsub(",", ""); sub(":$", ""); print}' | paste -sd' ')
+            readarray -t COMPREPLY < <(compgen -W "$__pyg_lexers" -- "$cur")
             return 0
             ;;
         -*x|--executable)
@@ -67,11 +31,20 @@ _pygsparkle(){
     esac
 
     if [[ $cur = -* ]]; then
-        readarray -t COMPREPLY < <(compgen -W '--executable -f --force --gui -h --help --lexer -x' -- "$cur")
+        options=(--executable -f --force -h --help --lexer -x)
+
+        if [[ $script = pygshit ]]; then
+            options+=(-l --less)
+        elif [[ $script = pygsparkle ]]; then
+            options+=(--gui)
+        fi
+
+        readarray -t COMPREPLY < <(compgen -W "${options[*]}" -- "$cur")
+        return 0
     fi
 
 }
 
-complete -F _pygsparkle -o default pygsparkle
+hash pygshit &>/dev/null && complete -F __pyg -o default pygshit
 
-}
+hash pygsparkle &>/dev/null && complete -F __pyg -o default pygsparkle
