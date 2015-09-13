@@ -159,8 +159,8 @@ usage(){
 
 	  -f, --force           continue even if mime type of FILE is not text/plain
 	  --gui                 display error messages via zenity
-	  -x, --executable      display syntax of an executable on the system PATH
 	  --lexer LEXER         indicate a lexer to use (default is to detect automatically)
+	  -x, --executable      display syntax of an executable on the system PATH
 	EOF
     exit 0
 }
