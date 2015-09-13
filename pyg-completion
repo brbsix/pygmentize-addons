@@ -25,17 +25,17 @@ _pygshit(){
         --lexer)
             # cache lexers in namespace
             _lexers >/dev/null
-            COMPREPLY=( $( compgen -W "$(_lexers)" -- "$cur" ) )
+            readarray -t COMPREPLY < <(compgen -W "$(_lexers)" -- "$cur" )
             return 0
             ;;
         -*x|--executable)
-            COMPREPLY=( $( compgen -W "$(_executables)" -- "$cur" ) )
+            readarray -t COMPREPLY < <(compgen -W "$(_executables)" -- "$cur" )
             return 0
             ;;
     esac
 
     if [[ $cur = -* ]]; then
-        COMPREPLY=( $( compgen -W '--executable -f --force -h --help -l --less --lexer -x' -- "$cur" ) )
+        readarray -t COMPREPLY < <(compgen -W '--executable -f --force -h --help -l --less --lexer -x' -- "$cur")
     fi
 
 }
@@ -57,17 +57,17 @@ _pygsparkle(){
         --lexer)
             # cache lexers in namespace
             _lexers >/dev/null
-            COMPREPLY=( $( compgen -W "$(_lexers)" -- "$cur" ) )
+            readarray -t COMPREPLY < <(compgen -W "$(_lexers)" -- "$cur")
             return 0
             ;;
         -*x|--executable)
-            COMPREPLY=( $( compgen -W "$(_executables)" -- "$cur" ) )
+            readarray -t COMPREPLY < <(compgen -W "$(_executables)" -- "$cur")
             return 0
             ;;
     esac
 
     if [[ $cur = -* ]]; then
-        COMPREPLY=( $( compgen -W '--executable -f --force --gui -h --help --lexer -x' -- "$cur" ) )
+        readarray -t COMPREPLY < <(compgen -W '--executable -f --force --gui -h --help --lexer -x' -- "$cur")
     fi
 
 }
