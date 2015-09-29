@@ -85,14 +85,20 @@ pygrunner(){
         [[ -n $lexer ]] && lexer="-l $lexer"
     fi
 
-    # configure the pygmentize command
-    cmd='pygmentize -f 256 $lexer -O style=native "$target"'
+    output=$(pygmentize -f 256 $lexer -O style=native "$target") || return 1
+    ec=$?
+
+    if (( ec != 0 )); then
+        return $?
+    elif [[ -z $output ]]; then
+        return 1
+    fi
 
     # execute the pygmentize command
     if [[ "${OPTIONS[@]}" = *less* ]]; then
-        eval -- "$cmd" | less -R
+        echo "$output" | less -R
     else
-        eval -- "$cmd"
+        echo "$output"
     fi
 
 }
