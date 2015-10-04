@@ -101,7 +101,7 @@ pygrunner(){
 
     # verify that $target is a text file (unless --force is used)
     if [[ "${OPTIONS[@]}" != *force* && ! $mimetype =~ ^text/ ]]; then
-        error "'$target' is not a text file"
+        error "'$target' is not a text file (use '--force' to override)"
         return 1
     fi
 
