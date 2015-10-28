@@ -21,7 +21,7 @@ __pyg(){
         --lexer)
             # cache lexers in global namespace
             if hash pygmentize &>/dev/null && [[ -z $__pyg_lexers ]]; then
-                readarray -t __pyg_lexers2 < <(pygmentize -L lexers 2>/dev/null | awk '/^* .+:$/ {sub("^* ", ""); sub(":$", ""); gsub(", ", "\n"); print}')
+                readarray -t __pyg_lexers < <(pygmentize -L lexers 2>/dev/null | awk '/^* .+:$/ {sub("^* ", ""); sub(":$", ""); gsub(", ", "\n"); print}')
             fi
 
             if (( ${#__pyg_lexers[@]} > 0 )); then
