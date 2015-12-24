@@ -7,6 +7,13 @@ error(){
     echo "ERROR: $*" >&2
 }
 
+haveopt(){
+    for option in "${OPTIONS[@]}"; do
+        [[ $option = "$1" ]] && return 0
+    done
+    return 1
+}
+
 pygmentize(){
     "python${PYVER}" - "$@" <<-EOF
 
@@ -30,7 +37,7 @@ pygrunner(){
     local cmd extension lexer mimetype target
     unset cmd extension lexer mimetype target
 
-    if [[ "${OPTIONS[@]}" = *executable* ]]; then
+    if haveopt 'executable'; then
         # set target to the full path of script
         target=$(type -P "$1")
         if [[ -z $target ]]; then
@@ -59,7 +66,7 @@ pygrunner(){
     fi
 
     # verify that $target is a text file (unless --force is used)
-    if [[ "${OPTIONS[@]}" != *force* && ! $mimetype =~ ^text/ ]]; then
+    if [[ ! $mimetype =~ ^text/ ]] && ! haveopt 'force'; then
         error "'$target' is not a text file (use '--force' to override)"
         return 1
     fi
@@ -95,7 +102,7 @@ pygrunner(){
     fi
 
     # execute the pygmentize command
-    if [[ "${OPTIONS[@]}" = *less* ]]; then
+    if haveopt 'less'; then
         echo "$output" | less -R
     else
         echo "$output"

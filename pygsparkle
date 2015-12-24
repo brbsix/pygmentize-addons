@@ -9,7 +9,7 @@ VIEWER=ristretto
 error(){
     echo "ERROR: $*" >&2
 
-    if [[ "${OPTIONS[@]}" = *gui* ]]; then
+    if haveopt 'gui'; then
         ERRORS+=("$*")
     fi
 }
@@ -17,13 +17,13 @@ error(){
 error_simple(){
     echo "$*" >&2
 
-    if [[ "${OPTIONS[@]}" = *gui* ]]; then
+    if haveopt 'gui'; then
         ERRORS+=("$*")
     fi
 }
 
 exit(){
-    if [[ "${OPTIONS[@]}" = *gui* && ${#ERRORS[@]} -gt 0 ]]; then
+    if haveopt 'gui' && (( ${#ERRORS[@]} > 0 )); then
         zenity --error --text "$(printf '%s\n' "${ERRORS[@]}")" 2>/dev/null
     fi
 
@@ -50,6 +50,13 @@ handle-image(){
     return 1
 }
 
+haveopt(){
+    for option in "${OPTIONS[@]}"; do
+        [[ $option = "$1" ]] && return 0
+    done
+    return 1
+}
+
 pygmentize(){
     "python${PYVER}" - "$@" <<-EOF
 
@@ -73,7 +80,7 @@ pygrunner(){
     local extension lexer mimetype target tempfile
     unset extension lexer mimetype target tempfile
 
-    if [[ "${OPTIONS[@]}" = *executable* ]]; then
+    if haveopt 'executable'; then
         target=$(type -P "$1")
         if [[ -z $target ]]; then
             error "Unable to find '$1' on PATH"
@@ -100,7 +107,7 @@ pygrunner(){
     fi
 
     # verify that $target is a text file (unless --force is used)
-    if [[ "${OPTIONS[@]}" != *force* && ! $mimetype =~ ^text/ ]]; then
+    if [[ ! $mimetype =~ ^text/ ]] && ! haveopt 'force'; then
         error "'$target' is not a text file (use '--force' to override)"
         return 1
     fi
