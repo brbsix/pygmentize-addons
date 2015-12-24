@@ -180,13 +180,7 @@ while true; do
     esac
 done
 
-files=()
-
-for arg in "$@"; do
-    files+=("$arg")
-done
-
-if (( ${#files[@]} == 0 )); then
+if (( $# == 0 )); then
     echo "$PROGRAM: missing operand" >&2
     echo "Try '$PROGRAM --help' for more information." >&2
     exit 1
@@ -201,6 +195,6 @@ else
     exit 1
 fi
 
-for file in "${files[@]}"; do
+for file in "$@"; do
     pygrunner "$file"
 done
