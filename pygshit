@@ -71,7 +71,7 @@ pygrunner(){
         extension=$(awk -F. '/.\./ {print $NF}' <<<"${target##*/}")
 
         # determine pygmentize lexer via mime type and/or extension
-        if [[ $mimetype =~ ^text/(plain|x-shellscript)$ && -z $extension ]]; then
+        if [[ $mimetype =~ ^text/(plain|x-shellscript)$ ]]; then
             lexer='bash'
         elif [[ $mimetype = 'text/x-perl' ]]; then
             lexer='perl'
