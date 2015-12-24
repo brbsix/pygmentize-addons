@@ -116,7 +116,7 @@ pygrunner(){
             lexer='bash'
         elif [[ $mimetype = 'text/x-perl' ]]; then
             lexer='perl'
-        elif [[ $mimetype = 'text/x-python' || $extension =~ ^py[23]$ ]]; then
+        elif [[ $mimetype = 'text/x-python' || $extension =~ ^py[23]?$ ]]; then
             lexer='python'
         elif [[ $mimetype = 'application/xml' ]]; then
             lexer='xml'
