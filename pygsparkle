@@ -37,7 +37,7 @@ handle-image(){
     elif [[ ! -f $1 ]]; then
         error "'$1' is not a file"
     elif [[ ! -r $1 ]]; then
-        error "No read permissions for '$1'"
+        error "'$1' is not readable"
     elif [[ ! $1 =~ ^/tmp/ ]]; then
         error "'$1' is not in /tmp"
     elif [[ ! $1 =~ \.(bmp|gif|img|jpeg|jpg|png)$ ]]; then
