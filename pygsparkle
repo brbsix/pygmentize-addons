@@ -233,5 +233,3 @@ fi
 for file in "$@"; do
     pygrunner "$file"
 done
-
-exit "$?"
