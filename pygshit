@@ -44,6 +44,16 @@ pygrunner(){
             error "Unable to find '$1' on PATH"
             return 1
         fi
+    elif [[ $1 = - ]]; then
+        target=$(mktemp)
+        GARBAGE+=("$target")
+        trap 'rm "${GARBAGE[@]}"' EXIT
+        cat < /dev/stdin > "$target"
+    elif [[ $1 = /dev/fd/* ]]; then
+        target=$(mktemp)
+        GARBAGE+=("$target")
+        trap 'rm "${GARBAGE[@]}"' EXIT
+        cat < "$1" > "$target"
     else
         target=$1
     fi
