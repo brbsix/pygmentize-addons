@@ -164,7 +164,7 @@ usage(){
 	Usage: $PROGRAM [OPTION]... FILE...
 	Display PNG images of syntax highlighted code.
 
-	  -f, --force           continue even if mime type of FILE is not text/plain
+	  -f, --force           continue even if mime type of FILE is not text/*
 	  --gui                 display error messages via zenity
 	  --lexer LEXER         indicate a lexer to use (default is to detect automatically)
 	  -x, --executable      display syntax of an executable on the system PATH

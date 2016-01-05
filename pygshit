@@ -133,7 +133,7 @@ usage(){
 	Usage: $PROGRAM [OPTION]... FILE...
 	Display syntax highlighted code.
 
-	  -f, --force           continue even if mime type of FILE is not text/plain
+	  -f, --force           continue even if mime type of FILE is not text/*
 	  -l, --less            use less to display command output
 	  --lexer LEXER         indicate a lexer to use (default is to detect automatically)
 	  -x, --executable      display syntax of an executable on the system PATH
