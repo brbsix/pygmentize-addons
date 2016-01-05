@@ -92,7 +92,7 @@ pygrunner(){
         [[ -n $lexer ]] && lexer="-l $lexer"
     fi
 
-    output=$(pygmentize -f 256 $lexer -O style=native "$target") || return 1
+    output=$(pygmentize -f 256 $lexer -O style=native "$target")
     ec=$?
 
     if (( ec != 0 )); then
