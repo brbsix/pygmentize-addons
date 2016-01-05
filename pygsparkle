@@ -121,6 +121,8 @@ pygrunner(){
         # determine pygmentize lexer via mime type and/or extension
         if [[ $mimetype =~ ^text/(plain|x-shellscript)$ ]]; then
             lexer='bash'
+        elif [[ $mimetype = 'text/x-diff' ]]; then
+            lexer='diff'
         elif [[ $mimetype = 'text/x-perl' ]]; then
             lexer='perl'
         elif [[ $mimetype = 'text/x-python' || $extension =~ ^py[23]?$ ]]; then

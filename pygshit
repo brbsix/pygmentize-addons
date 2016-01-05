@@ -71,6 +71,8 @@ pygrunner(){
         return 1
     fi
 
+    opts='-O style=native'
+
     if [[ -n $LEXER ]]; then
         lexer="-l $LEXER"
     else
@@ -80,6 +82,9 @@ pygrunner(){
         # determine pygmentize lexer via mime type and/or extension
         if [[ $mimetype =~ ^text/(plain|x-shellscript)$ ]]; then
             lexer='bash'
+        elif [[ $mimetype = 'text/x-diff' ]]; then
+            lexer='diff'
+            opts=''
         elif [[ $mimetype = 'text/x-perl' ]]; then
             lexer='perl'
         elif [[ $mimetype = 'text/x-python' || $extension =~ ^py[23]?$ ]]; then
@@ -92,7 +97,7 @@ pygrunner(){
         [[ -n $lexer ]] && lexer="-l $lexer"
     fi
 
-    output=$(pygmentize -f 256 $lexer -O style=native "$target")
+    output=$(pygmentize -f 256 $lexer $opts "$target")
     ec=$?
 
     if (( ec != 0 )); then
