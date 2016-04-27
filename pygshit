@@ -81,33 +81,30 @@ pygrunner(){
         return 1
     fi
 
-    opts='-O style=native'
+    opts=('-O' 'style=native')
 
     if [[ -n $LEXER ]]; then
-        lexer="-l $LEXER"
+        lexer=('-l' "$LEXER")
     else
         # determine file extension
         extension=$(awk -F. '/.\./ {print $NF}' <<<"${target##*/}")
 
         # determine pygmentize lexer via mime type and/or extension
         if [[ $mimetype =~ ^text/(plain|x-shellscript)$ ]]; then
-            lexer='bash'
+            lexer=('-l' 'bash')
         elif [[ $mimetype = 'text/x-diff' ]]; then
-            lexer='diff'
-            opts=''
+            lexer=('-l' 'diff')
+            opts=()
         elif [[ $mimetype = 'text/x-perl' ]]; then
-            lexer='perl'
+            lexer=('-l' 'perl')
         elif [[ $mimetype = 'text/x-python' || $extension =~ ^py[23]?$ ]]; then
-            lexer='python'
+            lexer=('-l' 'python')
         elif [[ $mimetype = 'application/xml' ]]; then
-            lexer='xml'
+            lexer=('-l' 'xml')
         fi
-
-        # add lexer option prefix (if necessary)
-        [[ -n $lexer ]] && lexer="-l $lexer"
     fi
 
-    output=$(pygmentize -f 256 $lexer $opts "$target")
+    output=$(pygmentize -f 256 "${lexer[@]}" "${opts[@]}" "$target")
     ec=$?
 
     if (( ec != 0 )); then

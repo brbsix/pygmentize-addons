@@ -123,31 +123,28 @@ pygrunner(){
     fi
 
     if [[ -n $LEXER ]]; then
-        lexer="-l $LEXER"
+        lexer=('-l' "$LEXER")
     else
         # determine file extension
         extension=$(awk -F. '/.\./ {print $NF}' <<<"${target##*/}")
 
         # determine pygmentize lexer via mime type and/or extension
         if [[ $mimetype =~ ^text/(plain|x-shellscript)$ ]]; then
-            lexer='bash'
+            lexer=('-l' 'bash')
         elif [[ $mimetype = 'text/x-diff' ]]; then
-            lexer='diff'
+            lexer=('-l' 'diff')
         elif [[ $mimetype = 'text/x-perl' ]]; then
-            lexer='perl'
+            lexer=('-l' 'perl')
         elif [[ $mimetype = 'text/x-python' || $extension =~ ^py[23]?$ ]]; then
-            lexer='python'
+            lexer=('-l' 'python')
         elif [[ $mimetype = 'application/xml' ]]; then
-            lexer='xml'
+            lexer=('-l' 'xml')
         fi
-
-        # add lexer option prefix (if necessary)
-        [[ -n $lexer ]] && lexer="-l $lexer"
     fi
 
     tempfile=$(mktemp --tmpdir pygsparkle-XXXXX.png)
 
-    if pygmentize -f png $lexer -O 'font_name=DejaVu Sans Mono,font_size=14,image_pad=15,line_number_pad=15,line_pad=6,style=native' -o "$tempfile" "$target"; then
+    if pygmentize -f png "${lexer[@]}" -O 'font_name=DejaVu Sans Mono,font_size=14,image_pad=15,line_number_pad=15,line_pad=6,style=native' -o "$tempfile" "$target"; then
         handle-image "$tempfile" &
     fi
 
