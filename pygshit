@@ -34,8 +34,8 @@ pygmentize(){
 
 pygrunner(){
 
-    local cmd extension lexer mimetype target
-    unset cmd extension lexer mimetype target
+    local extension lexer mimetype target
+    unset extension lexer mimetype target
 
     if haveopt 'executable'; then
         # set target to the full path of script
