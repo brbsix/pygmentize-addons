@@ -77,8 +77,8 @@ pygmentize(){
 
 pygrunner(){
 
-    local extension lexer mimetype target tempfile
-    unset extension lexer mimetype target tempfile
+    local extension mimetype target tempfile
+    unset extension mimetype target tempfile
 
     if haveopt 'executable'; then
         target=$(type -P "$1")
@@ -122,29 +122,31 @@ pygrunner(){
         return 1
     fi
 
+    opts=()
+
     if [[ -n $LEXER ]]; then
-        lexer=('-l' "$LEXER")
+        opts+=('-l' "$LEXER")
     else
         # determine file extension
         extension=$(awk -F. '/.\./ {print $NF}' <<<"${target##*/}")
 
         # determine pygmentize lexer via mime type and/or extension
         if [[ $mimetype = 'text/x-python' || $extension =~ ^py[23]?$ ]]; then
-            lexer=('-l' 'python')
+            opts+=('-l' 'python')
         elif [[ $mimetype =~ ^text/(plain|x-shellscript)$ ]]; then
-            lexer=('-l' 'bash')
+            opts+=('-l' 'bash')
         elif [[ $mimetype = 'text/x-diff' ]]; then
-            lexer=('-l' 'diff')
+            opts+=('-l' 'diff')
         elif [[ $mimetype = 'text/x-perl' ]]; then
-            lexer=('-l' 'perl')
+            opts+=('-l' 'perl')
         elif [[ $mimetype = 'application/xml' ]]; then
-            lexer=('-l' 'xml')
+            opts+=('-l' 'xml')
         fi
     fi
 
     tempfile=$(mktemp --tmpdir pygsparkle-XXXXX.png)
 
-    if pygmentize -f png "${lexer[@]}" -O 'font_name=DejaVu Sans Mono,font_size=14,image_pad=15,line_number_pad=15,line_pad=6,style=native' -o "$tempfile" "$target"; then
+    if pygmentize -f png "${opts[@]}" -O 'font_name=DejaVu Sans Mono,font_size=14,image_pad=15,line_number_pad=15,line_pad=6,style=native' -o "$tempfile" "$target"; then
         handle-image "$tempfile" &
     fi
 

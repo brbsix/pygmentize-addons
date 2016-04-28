@@ -34,8 +34,8 @@ pygmentize(){
 
 pygrunner(){
 
-    local extension lexer mimetype target
-    unset extension lexer mimetype target
+    local extension mimetype target
+    unset extension mimetype target
 
     if haveopt 'executable'; then
         # set target to the full path of script
@@ -84,27 +84,26 @@ pygrunner(){
     opts=('-O' 'style=native')
 
     if [[ -n $LEXER ]]; then
-        lexer=('-l' "$LEXER")
+        opts+=('-l' "$LEXER")
     else
         # determine file extension
         extension=$(awk -F. '/.\./ {print $NF}' <<<"${target##*/}")
 
         # determine pygmentize lexer via mime type and/or extension
         if [[ $mimetype = 'text/x-python' || $extension =~ ^py[23]?$ ]]; then
-            lexer=('-l' 'python')
+            opts+=('-l' 'python')
         elif [[ $mimetype =~ ^text/(plain|x-shellscript)$ ]]; then
-            lexer=('-l' 'bash')
+            opts+=('-l' 'bash')
         elif [[ $mimetype = 'text/x-diff' ]]; then
-            lexer=('-l' 'diff')
-            opts=()
+            opts=('-l' 'diff')
         elif [[ $mimetype = 'text/x-perl' ]]; then
-            lexer=('-l' 'perl')
+            opts+=('-l' 'perl')
         elif [[ $mimetype = 'application/xml' ]]; then
-            lexer=('-l' 'xml')
+            opts+=('-l' 'xml')
         fi
     fi
 
-    output=$(pygmentize -f 256 "${lexer[@]}" "${opts[@]}" "$target")
+    output=$(pygmentize -f 256 "${opts[@]}" "$target")
     ec=$?
 
     if (( ec != 0 )); then
