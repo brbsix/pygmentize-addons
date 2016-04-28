@@ -34,8 +34,8 @@ pygmentize(){
 
 pygrunner(){
 
-    local extension mimetype target
-    unset extension mimetype target
+    local ec extension mimetype opts output target
+    unset ec extension mimetype opts output target
 
     if haveopt 'executable'; then
         # set target to the full path of script

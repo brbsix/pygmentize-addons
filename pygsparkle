@@ -77,8 +77,8 @@ pygmentize(){
 
 pygrunner(){
 
-    local extension mimetype target tempfile
-    unset extension mimetype target tempfile
+    local extension mimetype opts target tempfile
+    unset extension mimetype opts target tempfile
 
     if haveopt 'executable'; then
         target=$(type -P "$1")
