@@ -182,7 +182,7 @@ while true; do
             shift
             LEXER=$1
             if [[ -z $LEXER || $LEXER = -* ]]; then
-                error "Please indicate a lexer to use"
+                error 'Please indicate a lexer to use'
                 exit 1
             fi
             shift
@@ -209,7 +209,7 @@ if pyver 2; then
 elif pyver 3; then
     PYVER=3
 else
-    error "Pygments does not appear to be installed"
+    error 'Pygments does not appear to be installed'
     exit 1
 fi
 
