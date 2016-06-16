@@ -117,7 +117,7 @@ pygrunner(){
     fi
 
     # verify that $target is a text file (unless --force is used)
-    if [[ ! $mimetype =~ ^(text/|application/xml$) ]] && ! haveopt 'force'; then
+    if [[ ! $mimetype =~ ^(text/|application/(javascript|xml)$) ]] && ! haveopt 'force'; then
         error "'$target' is not a text file (use '--force' to override)"
         return 1
     fi
