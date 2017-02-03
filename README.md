@@ -23,7 +23,7 @@ To install Pygments to your local bin folder via pip:
 
     pip install --user Pygments
 
-*Note: `pygsparkle` requires an image viewer capable of viewing PNG images. It is currently configured to use ristretto (the default image viewer in XFCE) but feel free to change it. The value is stored in the VIEWER variable near the top of the file.*
+*Note: `pygsparkle` requires an image viewer capable of viewing PNG images. It is currently configured to use ristretto (the default image viewer in XFCE) but feel free to change it. The value is stored in the VIEWER variable near the top of the file. Alternatively you can simply configure VIEWER in the environment, e.g. `VIEWER=gloobus-preview pygsparkle ./script.sh`.*
 
 Usage
 -----

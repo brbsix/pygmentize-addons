@@ -3,8 +3,8 @@
 # Display PNG images of syntax highlighted code
 
 
-# program used to open PNG images (edit as necessary)
-VIEWER=ristretto
+# program used to open PNG images
+: "${VIEWER:=ristretto}"
 
 error(){
     echo "ERROR: $*" >&2
