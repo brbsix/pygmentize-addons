@@ -57,7 +57,7 @@ pygrunner(){
         target=$(mktemp)
         GARBAGE+=("$target")
         trap 'rm "${GARBAGE[@]}"' EXIT
-        cat < /dev/stdin > "$target"
+        cat > "$target"
     elif [[ $1 = /dev/fd/* ]]; then
         target=$(mktemp)
         GARBAGE+=("$target")
