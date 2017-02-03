@@ -103,6 +103,8 @@ pygrunner(){
             opts+=('-l' 'python')
         elif [[ $mimetype =~ ^text/(plain|x-shellscript)$ ]]; then
             opts+=('-l' 'bash')
+        elif [[ $mimetype = 'text/html' ]]; then
+            opts+=('-l' 'html')
         elif [[ $mimetype = 'text/x-diff' ]]; then
             opts=('-l' 'diff')
         elif [[ $mimetype = 'text/x-perl' ]]; then
