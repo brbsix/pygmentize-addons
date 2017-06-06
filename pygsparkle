@@ -155,7 +155,7 @@ pygrunner(){
         fi
     fi
 
-    tempfile=$(mktemp --tmpdir pygsparkle-XXXXX.png)
+    tempfile=$(mktemp --directory --tmpdir pygsparkle-XXXXX)/source.png
 
     if pygmentize -f png "${opts[@]}" -O 'font_name=DejaVu Sans Mono,font_size=14,image_pad=15,line_number_pad=15,line_pad=6,style=native' -o "$tempfile" "$target"; then
         handle-image "$tempfile" &
