@@ -219,10 +219,10 @@ if (( $# == 0 )); then
     exit 1
 fi
 
-if pyver 2; then
-    PYVER=2
-elif pyver 3; then
+if pyver 3; then
     PYVER=3
+elif pyver 2; then
+    PYVER=2
 else
     error 'Pygments does not appear to be installed'
     exit 1
