@@ -4,7 +4,6 @@
 
 
 __pyg(){
-
     local cur prev script
 
     COMPREPLY=()
@@ -44,7 +43,6 @@ __pyg(){
         readarray -t COMPREPLY < <(compgen -W "${options[*]}" -- "$cur")
         return 0
     fi
-
 }
 
 hash pygshit &>/dev/null && complete -F __pyg -o default pygshit
