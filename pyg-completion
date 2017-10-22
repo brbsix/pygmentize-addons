@@ -3,10 +3,6 @@
 # bash completion file for pygmentize-addons
 
 
-_executables(){
-    echo -n "$PATH" | xargs -d: -I{} -- find -L {} -maxdepth 1 -type f -executable -printf '%P\n' 2>/dev/null | sort -u
-}
-
 __pyg(){
 
     local cur prev script
@@ -31,7 +27,7 @@ __pyg(){
             return 0
             ;;
         -*x|--executable)
-            readarray -t COMPREPLY < <(compgen -W "$(_executables)" -- "$cur")
+            readarray -t COMPREPLY < <(compgen -W "$(echo -n "$PATH" | xargs -d: -I{} -- find -L {} -maxdepth 1 -type f -executable -printf '%P\n' 2>/dev/null | sort -u)" -- "$cur")
             return 0
             ;;
     esac
