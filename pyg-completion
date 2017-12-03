@@ -45,6 +45,10 @@ __pyg(){
     fi
 }
 
-hash pygshit &>/dev/null && complete -F __pyg -o default pygshit
+if hash pygshit &>/dev/null; then
+    complete -F __pyg -o default pygshit
+fi
 
-hash pygsparkle &>/dev/null && complete -F __pyg -o default pygsparkle
+if hash pygsparkle &>/dev/null; then
+    complete -F __pyg -o default pygsparkle
+fi
