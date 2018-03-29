@@ -154,7 +154,7 @@ pygrunner(){
             opts+=('-l' 'perl')
         elif [[ $mimetype = 'text/x-ruby' ]]; then
             opts+=('-l' 'ruby')
-        elif [[ $mimetype = 'application/xml' ]]; then
+        elif [[ $mimetype =~ ^(text|application)/xml$ ]]; then
             opts+=('-l' 'xml')
         fi
     fi
